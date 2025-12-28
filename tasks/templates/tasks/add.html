@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Task</title>
+    <style>
+        form { width: 400px; margin: 50px auto; display: flex; flex-direction: column; }
+        label { margin-top: 10px; }
+        input, textarea, select { padding: 8px; margin-top: 5px; }
+        button { margin-top: 20px; padding: 10px; background-color: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background-color: #45a049; }
+        a { display: block; margin-top: 10px; text-align: center; color: blue; text-decoration: none; }
+    </style>
+</head>
+<body>
+    <h1 style="text-align:center;">Add New Task</h1>
+
+    <form method="post" action="{% url 'add_task' %}">
+        {% csrf_token %}
+        <label>Title:</label>
+        <input type="text" name="title" required>
+
+        <label>Description:</label>
+        <textarea name="description"></textarea>
+        <label>Due Date:</label>
+        <input type="date" name="due_date" required>
+        <select name="priority" required>
+            <option value="">-- Select Task Priority --</option>
+{#            <option value="not_define">Not Define</option>#}
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+        </select>
+        <label>Status:</label>
+        <select name="status">
+            <option value="Pending" selected>Pending</option>
+            <option value="completed">Completed</option>
+        </select>
+        <button type="submit">Add Task</button>
+    </form>
+    <a href="/">Back to Task List</a>
+</body>
+</html>

@@ -2,9 +2,11 @@
 A Django-based Task Manager application using **Raw SQL (No ORM)** with both API and Template-based UI.
 
 ## Features
+- Create, Read, Update, Delete tasks
 - RESTful API (CRUD)
 - Raw SQL (No Django ORM)
 - Django Templates UI
+- Soft delete support
 - Logging & Error Handling
 - Pytest test cases
 
@@ -38,11 +40,21 @@ A Django-based Task Manager application using **Raw SQL (No ORM)** with both API
 
 ## API Endpoints
 
-- GET /api/tasks/
-- GET /api/tasks/{id}/
-- POST /api/tasks/  
-- PUT /api/tasks/{id}/  
-- DELETE /api/tasks/{id}/  
+- GET | /api/tasks/ | Get all tasks |
+- GET | /api/tasks/<id>/ | Get task by ID |
+- POST | /api/tasks/ | Create task |
+- PUT | /api/tasks/<id>/ | Update task |
+- DELETE | /api/tasks/<id>/ | Delete task |
+
+## Sample POST Request
+```json
+{
+  "title": "Seprate Task",
+  "description": "To create TO-DO-LIST",
+  "priority": "high",
+  "due_date": "2025-12-31",
+  "status": "pending"
+}
 
 
 ## Template URLs

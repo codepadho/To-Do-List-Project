@@ -11,12 +11,12 @@ from django.http import JsonResponse
 logger = logging.getLogger(__name__)
 
 #---------------------------------------- API --------------------------------
-
 @csrf_exempt
 def task_api(request, task_id=None):
     connection = get_connection()
     cursor = connection.cursor()
     try:
+        #-----------------GET----------
         if request.method == 'GET':
             if task_id:
                 cursor.execute('SELECT * FROM tasks WHERE id = %s AND is_deleted=0', (task_id,))
@@ -46,26 +46,36 @@ def task_api(request, task_id=None):
                         }
                     )
                 return JsonResponse(data, safe=False)
+        #-------------------POST---------------------
         elif request.method == 'POST':
             data = json.loads(request.body)
             title=data.get('title')
+            due_date = data.get('due_date')
+            if not title or not due_date:
+                return JsonResponse({'message': 'Title and Due date is required'}, status=HTTPStatus.BAD_REQUEST)
             description=data.get('description')
-            due_date=data.get('due_date')
             priority=data.get('priority')
             status=data.get('status')
-
-            cursor.execute("INSERT INTO tasks (title, description, due_date, priority, status) VALUES (%s, %s, %s, %s, %s)",
-                           (title, description, due_date, priority, status))
+            try:
+                cursor.execute("INSERT INTO tasks (title, description, due_date, priority, status) VALUES (%s, %s, %s, %s, %s)",
+                               (title, description, due_date, priority, status))
+            except Exception as e:
+                logger.exception("Table Not Exist")
+                return JsonResponse({'msg': 'Internal server error'}, status=500)
             connection.commit()
             return JsonResponse({'msg':'Task created'}, status=201)
-
+        #------------------PUT----------------
         elif request.method == 'PUT':
             if not task_id:
                 return JsonResponse({'msg':'Task ID required'}, status=400)
             data = json.loads(request.body)
             title=data.get('title')
+            if not title:
+                return JsonResponse({'message': 'Title is required'}, status=400)
             description=data.get('description')
             due_date=data.get('due_date')
+            if not due_date:
+                return JsonResponse({'message': 'Due date is required'}, status=400)
             priority=data.get('priority')
             status=data.get('status')
             cursor.execute("UPDATE tasks SET title=%s, description=%s, due_date=%s, priority=%s, status =%s WHERE id = %s AND is_deleted = 0",
@@ -74,7 +84,7 @@ def task_api(request, task_id=None):
                 return JsonResponse({'msg':'Task not found or deleted'}, status=HTTPStatus.NOT_FOUND)
             connection.commit()
             return JsonResponse({'msg':'Task updated'}, status=200)
-
+        #---------------------DELETE----------------
         elif request.method == 'DELETE':
             if not task_id:
                 return JsonResponse({'msg':'Task ID required'}, status=400)
@@ -84,8 +94,8 @@ def task_api(request, task_id=None):
         return JsonResponse({'msg':'Invalid Reaquest'}, status=400)
 
     except Exception as e:
-        logger.error(e)
-        return JsonResponse({'msg':'server error'}, status=500)
+        logger.error(f"Error something went wrong: {e}", exc_info=True)
+        return JsonResponse({'msg':'Internal server error'}, status=500)
     finally:
         connection.close()
 

@@ -46,17 +46,6 @@ A Django-based Task Manager application using **Raw SQL (No ORM)** with both API
 - PUT | /api/tasks/<id>/ | Update task |
 - DELETE | /api/tasks/<id>/ | Delete task |
 
-## Sample POST Request
-```json
-{
-  "title": "Seprate Task",
-  "description": "To create TO-DO-LIST",
-  "priority": "high",
-  "due_date": "2025-12-31",
-  "status": "pending"
-}
-
-
 ## Template URLs
 
 Add Task: http://127.0.0.1:8000/add/
@@ -65,3 +54,13 @@ Task List: http://127.0.0.1:8000/
 
 ## Run Project
 python manage.py runserver
+
+## Sample POST Request
+```json
+{
+  "title": "Separate Task",
+  "description": "To create TO-DO-LIST",
+  "priority": "high",
+  "due_date": "2025-12-31",
+  "status": "pending"
+}
